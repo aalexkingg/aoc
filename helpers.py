@@ -96,5 +96,24 @@ def rotate90c(arr):
     return new_arr
 
 
+def str_to_int(arr):
+    """
+    Converts list of strings to list of ints
+    :param arr:
+    :return:
+    """
+    if len(arr.asarray.shape) == 1:
+        # 1d array
+        return list(map(int, arr))
+    elif len(arr.asarray.shape) == 2:
+        # 2d array
+        temp = []
+        for i in range(len(arr)):
+            temp.append(list(map(int, arr[i])))
+        return temp
+    else:
+        raise "Array dimensions too large."
+
+
 @functools.lru_cache(maxsize=None)
 def t(): pass
