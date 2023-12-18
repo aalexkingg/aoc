@@ -3,6 +3,7 @@ from collections import namedtuple
 pos = namedtuple("pos", ["x", "y"])
 node = namedtuple("node", ["flag", "node", "last", "val", "route"])
 
+#grid = [[int(y) for y in x] for x in open("data").read().strip().split("\n")]
 
 #t = [["a", "bb"], ["c", "dd"], ["e", "ff"]]
 #print(list(zip(*t)))
@@ -15,9 +16,11 @@ node = namedtuple("node", ["flag", "node", "last", "val", "route"])
 #exit()
 
 
-def A_star(arr, start, end):
+def A_star(grid, start, end):
     open_list = [node(0, pos(*start), pos(-1, 0), 0, "   ")]
-    path = [["." for _ in range(141)] for _ in range(141)]
+    max_x, max_y = len(grid), len(grid[0])
+    print(max_x, max_y)
+    path = [["." for _ in range(max_y)] for _ in range(max_x)]
 
     # current_low_cost = min(current_low_cost, parent_cost)
     # sorted(cards, key=lambda x: (x[0],x[1]))
@@ -36,7 +39,7 @@ def A_star(arr, start, end):
         nx = current_node.node.x-1
         ny = current_node.node.y
         nroute = (current_node.route+"u")[-3:]
-        if (nx, ny) != current_node.last and -1 < nx < 141 and -1 < ny < 141 and current_node.route != "uuu":
+        if (nx, ny) != current_node.last and -1 < nx < max_x and -1 < ny < max_y and current_node.route != "uuu":
             val = current_node.val + grid[nx][ny]
             if (nx, ny) in list(zip(*open_list))[1]:
                 idx = list(zip(*open_list))[1].index((nx, ny))
@@ -53,7 +56,7 @@ def A_star(arr, start, end):
         nx = current_node.node.x+1
         ny = current_node.node.y
         nroute = (current_node.route+"d")[-3:]
-        if (nx, ny) != current_node.last and -1 < nx < 141 and -1 < ny < 141 and current_node.route != "ddd":
+        if (nx, ny) != current_node.last and -1 < nx < max_x and -1 < ny < max_y and current_node.route != "ddd":
             val = current_node.val + grid[nx][ny]
             if (nx, ny) in list(zip(*open_list))[1]:
                 idx = list(zip(*open_list))[1].index((nx, ny))
@@ -70,7 +73,7 @@ def A_star(arr, start, end):
         nx = current_node.node.x
         ny = current_node.node.y-1
         nroute = (current_node.route+"l")[-3:]
-        if (nx, ny) != current_node.last and -1 < nx < 141 and -1 < ny < 141 and current_node.route != "lll":
+        if (nx, ny) != current_node.last and -1 < nx < max_x and -1 < ny < max_y and current_node.route != "lll":
             val = current_node.val + grid[nx][ny]
             if (nx, ny) in list(zip(*open_list))[1]:
                 idx = list(zip(*open_list))[1].index((nx, ny))
@@ -87,7 +90,7 @@ def A_star(arr, start, end):
         nx = current_node.node.x
         ny = current_node.node.y+1
         nroute = (current_node.route+"r")[-3:]
-        if (nx, ny) != current_node.last and -1 < nx < 141 and -1 < ny < 141 and current_node.route != "rrr":
+        if (nx, ny) != current_node.last and -1 < nx < max_x and -1 < ny < max_y and current_node.route != "rrr":
             val = current_node.val + grid[nx][ny]
             if (nx, ny) in list(zip(*open_list))[1]:
                 idx = list(zip(*open_list))[1].index((nx, ny))
@@ -105,15 +108,15 @@ def A_star(arr, start, end):
 
         print(len(open_list), list(zip(*open_list))[0].count(0))
 
-    print(open_list[list(zip(*open_list))[1].index((140, 140))])
-    current = pos(140, 140)
+    print(open_list[list(zip(*open_list))[1].index((end[0], end[1]))])
+    current = pos(end[0], end[1])
     total = 0
     while current != (-1, 0):
         total += grid[current.x][current.y]
         path[current.x][current.y] = str(grid[current.x][current.y])
         current = open_list[list(zip(*open_list))[1].index(current)].last
 
-    print(total-grid[0][0])
+    print(total-grid[start[0]][start[1]])
 
     for r in path:
         print("".join(r))
@@ -121,15 +124,15 @@ def A_star(arr, start, end):
     return open_list[list(zip(*open_list))[1].index((end[0]-1, end[1]-1))].val
 
 
-with open("data") as f:
+with open("inp") as f:
     # weighted graph
     # A* algorithm
-    grid = list(map(lambda x: x.strip("\n"), f.readlines()))
+    arr = list(map(lambda x: x.strip("\n"), f.readlines()))
     temp = []
-    for i in range(len(grid)):
-        temp.append(list(map(int, grid[i])))
-    grid = temp
+    for i in range(len(arr)):
+        temp.append(list(map(int, arr[i])))
+    arr = temp
 
-    shortest = A_star(grid, (0, 0), (141, 141))
+    shortest = A_star(arr, (0, 0), (12, 12))
 
     print(shortest)
