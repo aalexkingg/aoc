@@ -17,7 +17,7 @@ node = namedtuple("node", ["flag", "node", "last", "val", "route"])
 
 
 def A_star(grid, start, end):
-    open_list = [node(0, pos(*start), pos(-1, 0), 0, "   ")]
+    open_list = [node(0, pos(*start), pos(-1, 0), 0, " ")]
     max_x, max_y = len(grid), len(grid[0])
     path = [["." for _ in range(max_y)] for _ in range(max_x)]
 
@@ -27,81 +27,81 @@ def A_star(grid, start, end):
     #  adds current node to closed list if its value is less than existing node
 
     # open list needs to be stored in order of lowest cost
-    i = 0
+
     # loop until no more nodes left
     while min(open_list)[0] == 0:
         # explore current node
         current_node = sorted(open_list, key=lambda x: (x.flag, x.val))[0]
+        if current_node.route != "l" and current_node.route != "r":
+            vall = current_node.val
+            valr = current_node.val
+            # create up/down
+            for i in range(1, 4):
+                nx = current_node.node.x
+                ny = current_node.node.y - i
+                nroute = "l"
+                if (nx, ny) != current_node.last and -1 < nx < max_x and -1 < ny < max_y:
+                    vall += grid[nx][ny]
+                    if (nx, ny) in list(zip(*open_list))[1]:
+                        idx = list(zip(*open_list))[1].index((nx, ny))
+                        if open_list[idx].val >= vall:
+                            open_list[idx] = node(0, pos(nx, ny), pos(nx, ny+1), vall, nroute)
+                        elif open_list[idx].val > vall:
+                            open_list.append(node(0, pos(nx, ny), pos(nx, ny+1), vall, nroute))
+                    else:
+                        open_list.append(node(0, pos(nx, ny), pos(nx, ny+1), vall, nroute))
 
-        # get connected nodes in other three directions and add to open list with costs
-        # create up
-        nx = current_node.node.x-1
-        ny = current_node.node.y
-        nroute = (current_node.route+"u")[-3:]
-        if (nx, ny) != current_node.last and -1 < nx < max_x and -1 < ny < max_y and current_node.route != "uuu":
-            val = current_node.val + grid[nx][ny]
-            if (nx, ny) in list(zip(*open_list))[1]:
-                idx = list(zip(*open_list))[1].index((nx, ny))
-                if open_list[idx].val > val:
-                    open_list[idx] = node(0, pos(nx, ny), current_node.node, val, nroute)
-                elif open_list[idx].val == val:
-                    #open_list.append(node(0, pos(nx, ny), current_node.node, val, nroute))
-                    pass
-            else:
-                open_list.append(node(0, pos(nx, ny), current_node.node, val, nroute))
+                nx = current_node.node.x
+                ny = current_node.node.y + i
+                nroute = "r"
+                if (nx, ny) != current_node.last and -1 < nx < max_x and -1 < ny < max_y:
+                    valr += grid[nx][ny]
+                    if (nx, ny) in list(zip(*open_list))[1]:
+                        idx = list(zip(*open_list))[1].index((nx, ny))
+                        if open_list[idx].val >= valr:
+                            open_list[idx] = node(0, pos(nx, ny), pos(nx, ny-1), valr, nroute)
+                        elif open_list[idx].val > valr:
+                            open_list.append(node(0, pos(nx, ny), pos(nx, ny-1), valr, nroute))
+                    else:
+                        open_list.append(node(0, pos(nx, ny), pos(nx, ny-1), valr, nroute))
+        if current_node.route != "u" and current_node.route != "d":
+            valu = current_node.val
+            vald = current_node.val
+            # create up/down
+            for i in range(1, 4):
+                nx = current_node.node.x - i
+                ny = current_node.node.y
+                nroute = "u"
+                if (nx, ny) != current_node.last and -1 < nx < max_x and -1 < ny < max_y:
+                    valu += grid[nx][ny]
+                    if (nx, ny) in list(zip(*open_list))[1]:
+                        idx = list(zip(*open_list))[1].index((nx, ny))
+                        if open_list[idx].val >= valu:
+                            open_list[idx] = node(0, pos(nx, ny), pos(nx+1, ny), valu, nroute)
+                        elif open_list[idx].val > valu:
+                            open_list.append(node(0, pos(nx, ny), pos(nx+1, ny), valu, nroute))
+                    else:
+                        open_list.append(node(0, pos(nx, ny), pos(nx+1, ny), valu, nroute))
 
-        # create down
-        nx = current_node.node.x+1
-        ny = current_node.node.y
-        nroute = (current_node.route+"d")[-3:]
-        if (nx, ny) != current_node.last and -1 < nx < max_x and -1 < ny < max_y and current_node.route != "ddd":
-            val = current_node.val + grid[nx][ny]
-            if (nx, ny) in list(zip(*open_list))[1]:
-                idx = list(zip(*open_list))[1].index((nx, ny))
-                if open_list[idx].val > val:
-                    open_list[idx] = node(0, pos(nx, ny), current_node.node, val, nroute)
-                elif open_list[idx].val == val:
-                    #open_list.append(node(0, pos(nx, ny), current_node.node, val, nroute))
-                    pass
-            else:
-                open_list.append(node(0, pos(nx, ny), current_node.node, val, nroute))
-
-        # create left
-        nx = current_node.node.x
-        ny = current_node.node.y-1
-        nroute = (current_node.route+"l")[-3:]
-        if (nx, ny) != current_node.last and -1 < nx < max_x and -1 < ny < max_y and current_node.route != "lll":
-            val = current_node.val + grid[nx][ny]
-            if (nx, ny) in list(zip(*open_list))[1]:
-                idx = list(zip(*open_list))[1].index((nx, ny))
-                if open_list[idx].val > val:
-                    open_list[idx] = node(0, pos(nx, ny), current_node.node, val, nroute)
-                elif open_list[idx].val == val:
-                    #open_list.append(node(0, pos(nx, ny), current_node.node, val, nroute))
-                    pass
-            else:
-                open_list.append(node(0, pos(nx, ny), current_node.node, val, nroute))
-
-        # create right
-        nx = current_node.node.x
-        ny = current_node.node.y+1
-        nroute = (current_node.route+"r")[-3:]
-        if (nx, ny) != current_node.last and -1 < nx < max_x and -1 < ny < max_y and current_node.route != "rrr":
-            val = current_node.val + grid[nx][ny]
-            if (nx, ny) in list(zip(*open_list))[1]:
-                idx = list(zip(*open_list))[1].index((nx, ny))
-                if open_list[idx].val > val:
-                    open_list[idx] = node(0, pos(nx, ny), current_node.node, val, nroute)
-                elif open_list[idx].val == val:
-                    #open_list.append(node(0, pos(nx, ny), current_node.node, val, nroute))
-                    pass
-            else:
-                open_list.append(node(0, pos(nx, ny), current_node.node, val, nroute))
+                nx = current_node.node.x + i
+                ny = current_node.node.y
+                nroute = "d"
+                if (nx, ny) != current_node.last and -1 < nx < max_x and -1 < ny < max_y:
+                    vald += grid[nx][ny]
+                    if (nx, ny) in list(zip(*open_list))[1]:
+                        idx = list(zip(*open_list))[1].index((nx, ny))
+                        if open_list[idx].val >= vald:
+                            open_list[idx] = node(0, pos(nx, ny), pos(nx-1, ny), vald, nroute)
+                        elif open_list[idx].val > valu:
+                            open_list.append(node(0, pos(nx, ny), pos(nx-1, ny), vald, nroute))
+                    else:
+                        open_list.append(node(0, pos(nx, ny), pos(nx-1, ny), vald, nroute))
 
         # add current node to closed list
         open_list[open_list.index(current_node)] = node(1, current_node.node, current_node.last, current_node.val, current_node.route)
 
         print(len(open_list), list(zip(*open_list))[0].count(0))
+
 
     print(open_list[list(zip(*open_list))[1].index((end[0], end[1]))])
     current = pos(end[0], end[1])

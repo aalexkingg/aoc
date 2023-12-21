@@ -1,6 +1,10 @@
 import functools
 
 
+if __name__ == "__main__":
+    exit()
+
+
 def base_convert(num, base, size=0) -> list[int]:
     """
     Converts num to base number.
@@ -113,6 +117,14 @@ def str_to_int(arr):
         return temp
     else:
         raise "Array dimensions too large."
+
+
+x, y = 0, 0
+# up, down, left, right
+for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+    for distance in range(1, 4):
+        nx = x + dx * distance
+        ny = y + dy * distance
 
 
 @functools.lru_cache(maxsize=None)
