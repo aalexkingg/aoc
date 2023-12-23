@@ -7,7 +7,7 @@ pos = namedtuple("pos", ["x", "y"])
 node = namedtuple("node", ["val", "node", "last", "type"])
 
 
-def find_possible_moves(grid, data, start, max_dist):
+def find_possible_moves(grid, start, max_dist):
     """
 
     :param grid:
@@ -57,25 +57,54 @@ def find_possible_moves(grid, data, start, max_dist):
     for da in data:
         print("".join(da))
 
+    print(total)
     return total
 
 
-d = [[y for y in x] for x in open("data").read().strip().split("\n")]
-S = pos(floor(len(d[0])/2), floor(len(d[0])/2))
+data = [[y for y in x] for x in open("data").read().strip().split("\n")]
+S = pos(floor(len(data[0]) / 2), floor(len(data[0]) / 2))
 
-max_steps = 131
-# odd = 7407
-# even = 7481
+max_steps = 130
+odd = 7407
+even = 7481
 # hashes = 2267
 
-g = [[1 for y in range(len(d[x]))] for x in range(len(d))]
-for i in range(len(d)):
-    for j in range(len(d[i])):
-        if d[i][j] == "#":
+g = [[1 for y in range(len(data[x]))] for x in range(len(data))]
+for i in range(len(data)):
+    for j in range(len(data[i])):
+        if data[i][j] == "#":
             g[i][j] = 9999
 
+max_steps = 64
 total = 0
-for x, y in [(130, 65), (65, 0), (0, 65), (65, 130)]:
-    total += find_possible_moves(g, d, pos(x, y), max_steps)
+for x, y in [(0, 0), (130, 0), (130, 130), (0, 130)]:
+    total += find_possible_moves(g, pos(x, y), max_steps)
 print("sides", total)
+
+max_steps = 130
+#num_1 = find_possible_moves(g, pos(0, 65), max_steps)
+#num_2 = find_possible_moves(g, pos(65, 0), max_steps)
+
+total = 0
+for d in data:
+    total += "".join(d).count("O")
+print(total)
+
+max_steps = 26501365
+n_max_steps = max_steps - 65
+grids = n_max_steps / 131
+
+odds = 202299**2
+evens = 202300**2
+print(odds)
+
+odd_total = odds * odd
+even_total = evens * even
+print(odd_total, even_total)
+
+edges = 202299 * 25973 + total * 202300
+corners = 22318
+
+total = odd_total + even_total + edges + corners
+print(total)
 
