@@ -15,8 +15,9 @@ data.slice(0).forEach((value, index) => {
 });
 
 // Part 2
-data.slice(2).forEach((value, index) => {
-    if (value > data[index-3]) {
+data.slice(3).forEach((value, index) => {
+    // index starts from 0 of slice
+    if (value > data[index]) {
         total2 += 1;
     }
 });
